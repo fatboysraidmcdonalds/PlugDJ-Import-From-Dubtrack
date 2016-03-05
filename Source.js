@@ -69,14 +69,13 @@ void(
 								})
 								.always(function(){
 									media.push({
+										id: id,
 										format: format,
 										cid: cid,
-										id: id,
-										title: title,
-										duration: duration,
-										image: image,
 										author: artist,
-										artist: artist
+										title: title,
+										image: image,
+										duration: duration,
 									});
 									ready = ready + 1;
 								});
