@@ -75,7 +75,8 @@ void(
 										title: title,
 										duration: duration,
 										image: image,
-										author: artist
+										author: artist,
+										artist: artist
 									});
 									ready = ready + 1;
 								});
