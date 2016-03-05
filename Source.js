@@ -112,7 +112,7 @@ void(
 								for (var key in errParse){
 									if (errParse.hasOwnProperty(key)){
 										var value = errParse[key];
-										append = "\n" + String(key) + ": " + String(value);
+										append = append . "\n" + String(key) + ": " + String(value);
 									}
 								}
 								if(append === ""){
