@@ -27,6 +27,7 @@ void(
 						(function(i){
 							var song = songs[i];
 							if(typeof song === "object" && song !== null){
+								var pos = total;
 								total = total + 1;
 								var format = song["format"];
 								var cid = song["cid"];
@@ -68,7 +69,7 @@ void(
 									artist = "";
 								})
 								.always(function(){
-									media.push({
+									media[pos] = {
 										id: id,
 										format: format,
 										cid: cid,
@@ -76,7 +77,7 @@ void(
 										title: title,
 										image: image,
 										duration: duration,
-									});
+									};
 									ready = ready + 1;
 								});
 							}
