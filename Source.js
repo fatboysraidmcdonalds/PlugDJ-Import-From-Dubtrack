@@ -62,11 +62,11 @@ void(
 											}
 										}
 									}catch(err){
-										artist = "";
+										artist = "Deleted?";
 									}
 								})
 								.fail(function(){
-									artist = "";
+									artist = "Deleted?";
 								})
 								.always(function(){
 									media[pos] = {
