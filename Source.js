@@ -62,13 +62,14 @@ void(
 											}
 										}
 									}catch(err){
-										artist = "Deleted?";
+										artist = "";
 									}
 								})
 								.fail(function(){
-									artist = "Deleted?";
+									artist = "";
 								})
 								.always(function(){
+									artist = artist === "" ? "Artist unavailable" : artist;
 									media[pos] = {
 										id: id,
 										format: format,
