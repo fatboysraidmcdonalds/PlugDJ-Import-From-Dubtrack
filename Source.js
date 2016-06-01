@@ -138,34 +138,32 @@ void(
 													}
 												})
 												.fail(function(data){
-													if((typeof data === "object" && data !== null) || typeof data === "string"){
-														try{
-															var response = data.responseText;
-															var responseData;
-															if(typeof response === "string"){
-																if(response === "Not Found"){
-																	errored = true;
-																	throw "Youtube Not Found";
-																}else{
-																	responseData = $.parseJSON(response);
-																}
-															}else{
-																responseData = data.responseObject;
-															}
-															if(typeof responseData === "object" && responseData !== null){
-																var errors = responseData["errors"];
-																if(typeof errors !== "undefined" && errors !== null){
-																	errored = true;
-																	throw "SoundCloud Not Found";
-																}
-															}
-															var status = data.status;
-															if(status !== 200){
+													try{
+														var response = data.responseText;
+														var responseData;
+														if(typeof response === "string"){
+															if(response === "Not Found"){
 																errored = true;
-																throw "Connectivity Error";
+																throw "Youtube Not Found";
+															}else{
+																responseData = $.parseJSON(response);
 															}
-														}catch(e){}
-													}
+														}else{
+															responseData = data.responseJSON;
+														}
+														if(typeof responseData === "object" && responseData !== null){
+															var errors = responseData["errors"];
+															if(typeof errors !== "undefined" && errors !== null){
+																errored = true;
+																throw "SoundCloud Not Found";
+															}
+														}
+														var status = data.status;
+														if(status !== 200){
+															errored = true;
+															throw "Connectivity Error";
+														}
+													}catch(e){}
 													artist = "";
 												})
 												.always(function(){
