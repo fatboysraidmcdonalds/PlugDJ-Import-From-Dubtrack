@@ -140,7 +140,7 @@ void(
 												.fail(function(data){
 													if((typeof data === "object" && data !== null) || typeof data === "string"){
 														try{
-															var response = data;
+															var response = data.responseText;
 															var responseData;
 															if(typeof response === "string"){
 																if(response === "Not Found"){
