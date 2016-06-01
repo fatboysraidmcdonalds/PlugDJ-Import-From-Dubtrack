@@ -127,7 +127,7 @@ void(
 													total++;
 													isImage(image,5000,function(isimage){
 														if(!isimage){
-															image = "http://www.marcswords.com/wp-content/themes/fearless/images/missing-image-640x360.png";
+															image = "http://i.imgur.com/e4hGizI.png";
 														}
 														var artistURL = format === 1 ? YoutubeArtist(cid) : SoundcloudArtist(cid);
 														var artist;
@@ -246,7 +246,7 @@ void(
 										delete toImport["errors"];
 										var media = toImport["media"];
 										var medialen = media.length;
-										for(asd = 0;asd < medialen; asd++){
+										for(asd = 0;asd < 200; asd++){
 											if(typeof media[asd] !== "object" || media[asd] === null){
 												media.splice(asd,1);
 											}
