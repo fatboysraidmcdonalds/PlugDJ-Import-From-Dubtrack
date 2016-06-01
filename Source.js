@@ -105,7 +105,7 @@ void(
 							(function(playlist){
 								var toImport = {};
 								imports.push(toImport);
-								toImport["name"] = name.concat(playlists === 1 ? '' : 'Part '.concat('0'.repeat(playlistZeroes).concat(playlist + 1).substring(0,playlistZeroes + 1)));
+								toImport["name"] = name.concat(playlists === 1 ? '' : ' Part '.concat('0'.repeat(playlistZeroes).concat(playlist + 1).substring(0,playlistZeroes + 1)));
 								var media = [];
 								toImport["media"] = media;
 								toImport["errors"] = 0;
