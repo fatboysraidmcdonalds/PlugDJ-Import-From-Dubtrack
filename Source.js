@@ -1,11 +1,14 @@
 void(
 	(function(){
 		var client_id = "3edd57551e32679d7ed09d84b6c7318e";
+		function ProxyURL(url){
+			return "https://main-primadonna.rhcloud.com/MAIN.php?action=HttpGet&content=".concat(encodeURIComponent(url));
+		}
 		function YoutubeArtist(cid){
-			return "https://main-primadonna.rhcloud.com/MAIN.php?action=HttpGet&content=".concat(encodeURIComponent("https://www.youtube.com/oembed?format=json&url=http://www.youtube.com/watch?v=".concat(encodeURIComponent(cid))));
+			return ProxyURL("https://www.youtube.com/oembed?format=json&url=http://www.youtube.com/watch?v=".concat(encodeURIComponent(cid)));
 		}
 		function SoundcloudArtist(cid){
-			return "https://main-primadonna.rhcloud.com/MAIN.php?action=HttpGet&content=".concat(encodeURIComponent("https://api.soundcloud.com/tracks/".concat(encodeURIComponent(cid)).concat("?client_id=").concat(encodeURIComponent(client_id))));
+			return ProxyURL("https://api.soundcloud.com/tracks/".concat(encodeURIComponent(cid)).concat("?client_id=").concat(encodeURIComponent(client_id)));
 		}
 		function CreateElement(str){
 			var asd = document.createElement('div');
@@ -56,6 +59,28 @@ void(
 			});
 			document.body.appendChild(main);
 		}
+		function isImage(url,timeout,handler){
+			timeout = timeout || 5000;
+			var timedOut = false, timer;
+			var img = new Image();
+			img.onerror = img.onabort = function() {
+				if (!timedOut) {
+					clearTimeout(timer);
+					handler(false);
+				}
+			};
+			img.onload = function() {
+				if (!timedOut) {
+					clearTimeout(timer);
+					callback(true);
+				}
+			};
+			img.src = url;
+			timer = setTimeout(function() {
+				timedOut = true;
+				callback(false);
+			}, timeout); 
+		}
 		var name = prompt("Playlist Name");
 		fileprompt("Playlist JSON","Select a .json or a .txt file of your playlist to import it",function(json){
 			var data;
@@ -87,105 +112,114 @@ void(
 										(function(i){
 											var song = songs[i];
 											if(typeof song === "object" && song !== null){
-												var pos = total;
-												total = total + 1;
 												var format = song["format"];
 												var cid = song["cid"];
 												var id = 0;
 												var title = song["title"];
 												var duration = song["duration"];
 												var image = song["image"];
-												var artistURL = format === 1 ? YoutubeArtist(cid) : SoundcloudArtist(cid);
-												var artist;
-												var errored = false;
-												$.get(artistURL)
-												.done(function(data){
-													try{
-														var response = data;
-														var responseData;
-														if(typeof response === "string"){
-															if(response === "Not Found"){
-																errored = true;
-																throw "Youtube Not Found";
-															}else{
-																try{
-																	responseData = $.parseJSON(data);
-																}catch(e){}
-															}
-														}else{
-															responseData = data;
-														}
-														if(typeof responseData === "object" && responseData !== null){
-															var errors = responseData["errors"];
-															if(typeof errors !== "undefined" && errors !== null){
-																errored = true;
-																throw "SoundCloud Not Found";
-															}else{
-																var responseArtist = responseData["author_name"];
-																if(typeof responseArtist === "string"){
-																	artist = responseArtist;
+												isImage(image,5000,function(isimage){
+													if(!isimage){
+														image = "http://www.marcswords.com/wp-content/themes/fearless/images/missing-image-640x360.png";
+													}
+													if((format === 1 || format === 2) && typeof cid === "string" && typeof id === "number" && typeof title === "string" && typeof duration === "number" && duration >= 0 && typeof image === "string"){
+														var artistURL = format === 1 ? YoutubeArtist(cid) : SoundcloudArtist(cid);
+														var artist;
+														var errored = false;
+														var pos = total;
+														total = total + 1;
+														$.get(artistURL)
+														.done(function(data){
+															try{
+																var response = data;
+																var responseData;
+																if(typeof response === "string"){
+																	if(response === "Not Found"){
+																		errored = true;
+																		throw "Youtube Not Found";
+																	}else{
+																		try{
+																			responseData = $.parseJSON(data);
+																		}catch(e){}
+																	}
 																}else{
-																	var responseUser = responseData["user"];
-																	if(typeof responseUser === "object" && responseUser !== null){
-																		var responseUsername = responseUser["username"];
-																		if(typeof responseUsername === "string"){
-																			artist = responseUsername;
+																	responseData = data;
+																}
+																if(typeof responseData === "object" && responseData !== null){
+																	var errors = responseData["errors"];
+																	if(typeof errors !== "undefined" && errors !== null){
+																		errored = true;
+																		throw "SoundCloud Not Found";
+																	}else{
+																		var responseArtist = responseData["author_name"];
+																		if(typeof responseArtist === "string"){
+																			artist = responseArtist;
+																		}else{
+																			var responseUser = responseData["user"];
+																			if(typeof responseUser === "object" && responseUser !== null){
+																				var responseUsername = responseUser["username"];
+																				if(typeof responseUsername === "string"){
+																					artist = responseUsername;
+																				}
+																			}
 																		}
 																	}
 																}
+															}catch(err){
+																artist = "";
 															}
-														}
-													}catch(err){
-														artist = "";
-													}
-												})
-												.fail(function(data){
-													try{
-														var response = data.responseText;
-														var responseData;
-														if(typeof response === "string"){
-															if(response === "Not Found"){
-																errored = true;
-																throw "Youtube Not Found";
+														})
+														.fail(function(data){
+															try{
+																var response = data.responseText;
+																var responseData;
+																if(typeof response === "string"){
+																	if(response === "Not Found"){
+																		errored = true;
+																		throw "Youtube Not Found";
+																	}else{
+																		try{
+																			responseData = $.parseJSON(response);
+																		}catch(e){}
+																	}
+																}else{
+																	responseData = data.responseJSON;
+																}
+																if(typeof responseData === "object" && responseData !== null){
+																	var errors = responseData["errors"];
+																	if(typeof errors !== "undefined" && errors !== null){
+																		errored = true;
+																		throw "SoundCloud Not Found";
+																	}
+																}
+																var status = data.status;
+																if(status !== 200){
+																	errored = true;
+																	throw "Connectivity Error";
+																}
+															}catch(e){}
+															artist = "";
+														})
+														.always(function(){
+															if(!errored){
+																artist = artist === "" ? "Artist unavailable" : artist;
+																media[(pos - start)] = {
+																	id: id,
+																	format: format,
+																	cid: cid,
+																	author: artist,
+																	title: title,
+																	image: image,
+																	duration: duration,
+																};
 															}else{
-																try{
-																	responseData = $.parseJSON(response);
-																}catch(e){}
+																toImport["errors"]++;
 															}
-														}else{
-															responseData = data.responseJSON;
-														}
-														if(typeof responseData === "object" && responseData !== null){
-															var errors = responseData["errors"];
-															if(typeof errors !== "undefined" && errors !== null){
-																errored = true;
-																throw "SoundCloud Not Found";
-															}
-														}
-														var status = data.status;
-														if(status !== 200){
-															errored = true;
-															throw "Connectivity Error";
-														}
-													}catch(e){}
-													artist = "";
-												})
-												.always(function(){
-													if(!errored){
-														artist = artist === "" ? "Artist unavailable" : artist;
-														media[(pos - start)] = {
-															id: id,
-															format: format,
-															cid: cid,
-															author: artist,
-															title: title,
-															image: image,
-															duration: duration,
-														};
+															ready++;
+														});
 													}else{
 														toImport["errors"]++;
 													}
-													ready++;
 												});
 											}
 										}(i))
