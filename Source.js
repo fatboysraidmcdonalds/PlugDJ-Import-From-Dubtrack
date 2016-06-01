@@ -147,10 +147,10 @@ void(
 																	errored = true;
 																	throw "Youtube Not Found";
 																}else{
-																	responseData = $.parseJSON(data);
+																	responseData = $.parseJSON(response);
 																}
 															}else{
-																responseData = data;
+																responseData = data.responseObject;
 															}
 															if(typeof responseData === "object" && responseData !== null){
 																var errors = responseData["errors"];
