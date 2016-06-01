@@ -60,26 +60,30 @@ void(
 			document.body.appendChild(main);
 		}
 		function isImage(url,timeout,handler){
-			timeout = timeout || 5000;
-			var timedOut = false, timer;
-			var img = new Image();
-			img.onerror = img.onabort = function() {
-				if (!timedOut) {
-					clearTimeout(timer);
+			if(typeof url === "string" && /\S/.test(url)){
+				timeout = timeout || 5000;
+				var timedOut = false, timer;
+				var img = new Image();
+				img.onerror = img.onabort = function() {
+					if (!timedOut) {
+						clearTimeout(timer);
+						handler(false);
+					}
+				};
+				img.onload = function() {
+					if (!timedOut) {
+						clearTimeout(timer);
+						handler(true);
+					}
+				};
+				img.src = url;
+				timer = setTimeout(function() {
+					timedOut = true;
 					handler(false);
-				}
-			};
-			img.onload = function() {
-				if (!timedOut) {
-					clearTimeout(timer);
-					callback(true);
-				}
-			};
-			img.src = url;
-			timer = setTimeout(function() {
-				timedOut = true;
-				callback(false);
-			}, timeout); 
+				}, timeout); 
+			}else{
+				handler(false);
+			}
 		}
 		var name = prompt("Playlist Name");
 		fileprompt("Playlist JSON","Select a .json or a .txt file of your playlist to import it",function(json){
@@ -128,8 +132,6 @@ void(
 														var artistURL = format === 1 ? YoutubeArtist(cid) : SoundcloudArtist(cid);
 														var artist;
 														var errored = false;
-														var pos = total;
-														total++;
 														$.get(artistURL)
 														.done(function(data){
 															try{
@@ -219,10 +221,10 @@ void(
 															}
 															ready++;
 														});
-													}else{
-														toImport["errors"]++;
-													}
-												});
+													});
+												}else{
+													toImport["errors"]++;
+												}
 											}
 										}(i))
 									);
