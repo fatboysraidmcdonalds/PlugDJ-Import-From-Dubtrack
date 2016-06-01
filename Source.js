@@ -2,10 +2,10 @@ void(
 	(function(){
 		var client_id = "3edd57551e32679d7ed09d84b6c7318e";
 		function YoutubeArtist(cid){
-			return "https://main-primadonna.rhcloud.com/MAIN.php?action=HttpGet&content=".concat(encodeURIComponent("https://www.youtube.com/oembed?format=json&url=http://www.youtube.com/watch?v=")).concat(encodeURIComponent(cid));
+			return "https://main-primadonna.rhcloud.com/MAIN.php?action=HttpGet&content=".concat(encodeURIComponent("https://www.youtube.com/oembed?format=json&url=http://www.youtube.com/watch?v=".concat(encodeURIComponent(cid))));
 		}
 		function SoundcloudArtist(cid){
-			return "https://api.soundcloud.com/tracks/".concat(encodeURIComponent(cid)).concat("?client_id=").concat(encodeURIComponent(client_id));
+			return "https://main-primadonna.rhcloud.com/MAIN.php?action=HttpGet&content=".concat(encodeURIComponent("https://api.soundcloud.com/tracks/".concat(encodeURIComponent(cid)).concat("?client_id=").concat(encodeURIComponent(client_id))));
 		}
 		function CreateElement(str){
 			var asd = document.createElement('div');
@@ -158,6 +158,11 @@ void(
 																	errored = true;
 																	throw "SoundCloud Not Found";
 																}
+															}
+															var status = data.status;
+															if(status !== 200){
+																errored = true;
+																throw "Connectivity Error";
 															}
 														}catch(e){}
 													}
