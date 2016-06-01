@@ -108,7 +108,9 @@ void(
 																errored = true;
 																throw "Youtube Not Found";
 															}else{
-																responseData = $.parseJSON(data);
+																try{
+																	responseData = $.parseJSON(data);
+																}catch(e){}
 															}
 														}else{
 															responseData = data;
@@ -146,7 +148,9 @@ void(
 																errored = true;
 																throw "Youtube Not Found";
 															}else{
-																responseData = $.parseJSON(response);
+																try{
+																	responseData = $.parseJSON(response);
+																}catch(e){}
 															}
 														}else{
 															responseData = data.responseJSON;
