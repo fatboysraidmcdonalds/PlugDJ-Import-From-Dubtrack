@@ -111,7 +111,7 @@ void(
 								toImport["errors"] = 0;
 								var start = playlist * 200;
 								var end = Math.min(start + 199,len);
-								for(i = start; i < end; i++){
+								for(i = start; i <= end; i++){
 									void(
 										(function(i){
 											var song = songs[i];
