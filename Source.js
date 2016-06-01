@@ -118,16 +118,18 @@ void(
 												var title = song["title"];
 												var duration = song["duration"];
 												var image = song["image"];
-												isImage(image,5000,function(isimage){
-													if(!isimage){
-														image = "http://www.marcswords.com/wp-content/themes/fearless/images/missing-image-640x360.png";
-													}
-													if((format === 1 || format === 2) && typeof cid === "string" && typeof id === "number" && typeof title === "string" && typeof duration === "number" && duration >= 0 && typeof image === "string"){
+												if((format === 1 || format === 2) && typeof cid === "string" && typeof id === "number" && typeof title === "string" && typeof duration === "number" && duration >= 0){
+													var pos = total;
+													total++;
+													isImage(image,5000,function(isimage){
+														if(!isimage){
+															image = "http://www.marcswords.com/wp-content/themes/fearless/images/missing-image-640x360.png";
+														}
 														var artistURL = format === 1 ? YoutubeArtist(cid) : SoundcloudArtist(cid);
 														var artist;
 														var errored = false;
 														var pos = total;
-														total = total + 1;
+														total++;
 														$.get(artistURL)
 														.done(function(data){
 															try{
