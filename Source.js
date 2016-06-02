@@ -16,6 +16,10 @@ void(
 			var child = asd.childNodes[0];
 			return child;
 		}
+		function RemoveElement(element){
+			var parent = element.parentNode;
+			return ((typeof parent !== "undefined" && parent !== null) ? (parent.removeChild(element) !== null) : false);
+		}
 		function fileprompt(title,body,handler){
 			var main = CreateElement("<div style=\"z-index: 99999; box-sizing: border-box; position: relative; background-color: #fff; background-clip: padding-box; border: 1px solid rgba(0,0,0,.2); border-radius: 6px; outline: 0; width: 50vw; margin-top: calc(50vh - 92px); margin-left: 25vw; color: #000\">");
 			var header = CreateElement("<div style=\"box-sizing: border-box; padding: 15px; border-bottom: 1px solid #e5e5e5;\">");
@@ -35,7 +39,7 @@ void(
 			var upload = CreateElement("<input type=\"file\" accept=\".txt,.json,text/plain,application/json\" style=\"box-sizing: border-box; margin: 0; overflow: visible; text-transform: none; -webkit-appearance: none; border-radius: 4px; border: 1px solid transparent; background-image: none; user-select: none; -webkit-user-select: none; cursor: pointer; touch-action: manipulation; -ms-touch-action: manipulation; vertical-align: middle; white-space: nowrap; text-align: center; line-height: 1.42857143; font-size: 14px; padding: 6px 12px; display: inline-block; border-color: #2e6da4; background-color: #337ab7; margin-left: 5px; margin-bottom: 0;\">Select File</button>");
 			footer.appendChild(upload);
 			XClose.addEventListener("click",function(){
-				main.remove();
+				RemoveElement(main);
 				handler(false);
 			});
 			var fileInput = upload;
@@ -46,7 +50,7 @@ void(
 					reader.onload = function(e2){
 						var result = reader.result;
 						if(typeof result === "string"){
-							main.remove();
+							RemoveElement(main);
 							handler(reader.result);
 						}else{
 							alert("An error occurred while reading this file. It may be malformed or corrupted, or you're trying to trick me with a false file extension =)");
