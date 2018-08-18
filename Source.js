@@ -2,7 +2,7 @@ void(
 	(function(){
 		var client_id = "3edd57551e32679d7ed09d84b6c7318e";
 		function ProxyURL(url){
-			return "https://main-primadonna.rhcloud.com/MAIN.php?action=HttpGet&content=".concat(encodeURIComponent(url));
+			return "https://cors-anywhere.herokuapp.com/".concat(encodeURIComponent(url));
 		}
 		function YoutubeArtist(cid){
 			return ProxyURL("https://www.youtube.com/oembed?format=json&url=http://www.youtube.com/watch?v=".concat(encodeURIComponent(cid)));
@@ -136,15 +136,19 @@ void(
 														var artistURL = format === 1 ? YoutubeArtist(cid) : SoundcloudArtist(cid);
 														var artist;
 														var errored = false;
-														$.get(artistURL)
-														.done(function(data){
+														$.ajax({
+															url: artistURL,
+															headers: {
+																Origin: "https://www.github.com"
+															}
+														}).done(function(data){
 															try{
 																var response = data;
 																var responseData;
 																if(typeof response === "string"){
 																	if(response === "Not Found"){
 																		errored = true;
-																		throw "Youtube Not Found";
+																		throw "YouTube Not Found";
 																	}else{
 																		try{
 																			responseData = $.parseJSON(data);
@@ -184,7 +188,7 @@ void(
 																if(typeof response === "string"){
 																	if(response === "Not Found"){
 																		errored = true;
-																		throw "Youtube Not Found";
+																		throw "YouTube Not Found";
 																	}else{
 																		try{
 																			responseData = $.parseJSON(response);
@@ -210,7 +214,7 @@ void(
 														})
 														.always(function(){
 															if(!errored){
-																artist = artist === "" ? "Artist unavailable" : artist;
+																artist = (artist === "") ? "Artist unavailable" : artist;
 																media[(pos - start)] = {
 																	id: id,
 																	format: format,
